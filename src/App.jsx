@@ -76,7 +76,7 @@ const App = () => {
     gsap.to(".girl", {
       rotate: 0,
       x: "-50%",
-      bottom: window.innerWidth <= 720 ? "-30%" : "-45%",
+      bottom: window.innerWidth <= 1000 ? "-15%" : "-45%",
       duration: 2,
       ease: "expo.inOut",
       delay: "-0.8",
