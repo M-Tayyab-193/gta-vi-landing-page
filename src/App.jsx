@@ -228,7 +228,7 @@ const App = () => {
               <img
                 src="/girlbg.png"
                 alt=""
-                className="girl absolute left-1/2 max-sm:-translate-x-1/2 scale-[0.75] max-sm:scale-[0.9] xl:scale-[0.85] overflow-hidden rotate-[-20deg]"
+                className="girl absolute left-1/2 scale-[0.75] max-sm:scale-[0.9] xl:scale-[0.85] overflow-hidden rotate-[-20deg]"
               />
             </div>
             <div className="btm-part w-full p-10 py-12 absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent">
