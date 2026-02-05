@@ -6,6 +6,37 @@ import "remixicon/fonts/remixicon.css";
 const App = () => {
   const [showNavbar, setShowNavbar] = useState(true);
   const [showContent, setShowContent] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  // Preload all critical images before starting animations
+  useEffect(() => {
+    const imageUrls = [
+      "/bg.png",
+      "/sky.png",
+      "/girlbg.png",
+      "/imag.png",
+      "/ps5.png",
+    ];
+
+    const preloadImages = imageUrls.map((url) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+        img.src = url;
+      });
+    });
+
+    Promise.all(preloadImages)
+      .then(() => {
+        setImagesLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Error preloading images:", error);
+        // Set loaded anyway to prevent infinite loading
+        setImagesLoaded(true);
+      });
+  }, []);
 
   useEffect(() => {
     const main = document.querySelector(".main");
@@ -23,6 +54,9 @@ const App = () => {
   }, [showContent]);
 
   useGSAP(() => {
+    // Only start animation after images are loaded
+    if (!imagesLoaded) return;
+
     const tl = gsap.timeline();
 
     tl.to(".vi-mask-group", {
@@ -45,7 +79,7 @@ const App = () => {
         }
       },
     });
-  });
+  }, [imagesLoaded]);
 
   useGSAP(() => {
     const main = document.querySelector(".main");
@@ -76,7 +110,7 @@ const App = () => {
     gsap.to(".girl", {
       rotate: 0,
       x: "-50%",
-      bottom: window.innerWidth <= 1000 ? "-15%" : "-45%",
+      bottom: window.innerWidth <= 1000 ? "-25%" : "-50%",
       duration: 2,
       ease: "expo.inOut",
       delay: "-0.8",
@@ -107,6 +141,16 @@ const App = () => {
   }, [showContent]);
   return (
     <>
+      {/* Loading indicator while images preload */}
+      {!imagesLoaded && (
+        <div className="fixed top-0 left-0 z-50 w-full h-screen flex items-center justify-center bg-black">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-white font-poppins text-lg">Loading...</p>
+          </div>
+        </div>
+      )}
+
       <div className="svg flex items-center justify-center fixed top-0 left-0 z-10 w-full h-screen overflow-hidden bg-[#000]">
         <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
           <defs>
@@ -159,7 +203,7 @@ const App = () => {
               </div>
             )}
 
-            <div className="relative images-div w-full h-screen overflow-hidden">
+            <div className="relative images-div w-full min-h-screen overflow-hidden">
               <img
                 src="/sky.png"
                 alt=""
@@ -170,21 +214,21 @@ const App = () => {
                 alt=""
                 className="bg scale-[1.5] rotate-[-15deg] absolute top-0 left-0 w-full h-full object-cover"
               />
-              <div className="txt absolute top-[25%]  xl:top-10 left-1/2 -translate-x-1/2 font-pricedown scale-[1.4] rotate-[-10deg]">
-                <h1 className="max-sm:text-[4rem] sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-15 sm:-ml-40">
+              <div className="txt absolute max-sm:top-[35%] max-sm:left-[60%] top-[25%]  xl:top-10 left-1/2 -translate-x-1/2 font-pricedown scale-[1.4] rotate-[-10deg]">
+                <h1 className=" max-sm:text-8xl sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-15 sm:-ml-40">
                   grand
                 </h1>
-                <h1 className="max-sm:text-[4rem] sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-5 sm:-ml-20">
+                <h1 className=" max-sm:text-8xl sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-5 sm:-ml-20">
                   theft
                 </h1>
-                <h1 className="max-sm:text-[4rem] sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-15 sm:-ml-40">
+                <h1 className=" max-sm:text-8xl sm:text-[6rem] xl:text-[10rem] leading-none max-sm:-ml-15 sm:-ml-40">
                   auto
                 </h1>
               </div>
               <img
                 src="/girlbg.png"
                 alt=""
-                className=" girl absolute -bottom-[150%] left-1/2 sm:-translate-x-1/2 max-sm:scale-[0.9] scale-[0.75] xl:scale-[0.85] overflow-hidden rotate-[-20deg]"
+                className="girl absolute left-1/2 max-sm:-translate-x-1/2 scale-[0.75] max-sm:scale-[0.9] xl:scale-[0.85] overflow-hidden rotate-[-20deg]"
               />
             </div>
             <div className="btm-part w-full p-10 py-12 absolute bottom-0 left-0 bg-gradient-to-t from-black to-transparent">
